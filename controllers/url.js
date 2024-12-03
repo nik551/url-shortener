@@ -11,7 +11,11 @@ async function handleGenerateNewShortURL(req, res) {
     redirectUrl: body.url,
     visitHistory: [],
   });
-  return res.json({ id: shortID });
+  const allUrls = await URL.find({});
+  return res.render("home", {
+    id: shortID,
+    urls: allUrls,
+  });
 }
 
 async function handleExpandedURL(req, res) {
@@ -33,8 +37,8 @@ async function handleExpandedURL(req, res) {
 async function handleGetAnalytics(req, res) {
   const shortId = req.params.shortId;
   const result = await URL.findOne({ shortId });
-  if (result === null){
-    return res.status(404).json({status:"Not found"});
+  if (result === null) {
+    return res.status(404).json({ status: "Not found" });
   }
   return res.json({
     totalClicks: result.visitHistory.length,
@@ -42,4 +46,8 @@ async function handleGetAnalytics(req, res) {
   });
 }
 
-module.exports = { handleGenerateNewShortURL, handleExpandedURL,handleGetAnalytics};
+module.exports = {
+  handleGenerateNewShortURL,
+  handleExpandedURL,
+  handleGetAnalytics,
+};
